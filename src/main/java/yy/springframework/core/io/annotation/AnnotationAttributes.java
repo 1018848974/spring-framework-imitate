@@ -49,7 +49,6 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
         return doGet(attributeName, Class[].class);
     }
 
-
     @SuppressWarnings("unchecked")
     private <T> T doGet(String attributeName, Class<T> expectedType) {
 

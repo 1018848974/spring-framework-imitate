@@ -41,8 +41,6 @@ public class SimpleAnnotationMetadata implements AnnotationMetadata {
         this.annotations = annotations;
     }
 
-
-
     @Override
     public Set<String> getAnnotationTypes() {
         Set<String> annotationTypes = this.annotationTypes;
@@ -57,7 +55,6 @@ public class SimpleAnnotationMetadata implements AnnotationMetadata {
     public List<MergedAnnotation<?>> getAnnotations() {
         return this.annotations;
     }
-
 
     @Override
     public String getClassName() {

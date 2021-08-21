@@ -16,13 +16,9 @@
 
 package yy.springframework.context.annotation;
 
-
-
 import yy.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
-
-
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -30,8 +26,8 @@ import java.lang.annotation.*;
 @Component
 public @interface Configuration {
 
-	String value() default "";
+    String value() default "";
 
-	boolean proxyBeanMethods() default true;
+    boolean proxyBeanMethods() default true;
 
 }

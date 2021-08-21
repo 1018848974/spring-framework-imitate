@@ -1,11 +1,15 @@
 package yy.springframework.context.support;
 
+import yy.springframework.beans.factory.AbstractBeanFactory;
 import yy.springframework.beans.factory.BeanDefinitionRegistryPostProcessor;
 import yy.springframework.beans.factory.ListableBeanFactory;
+import yy.springframework.beans.factory.config.BeanPostProcessor;
 import yy.springframework.beans.support.BeanDefinitionRegistry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <Description> <br>
@@ -17,12 +21,17 @@ import java.util.List;
  */
 public class PostProcessorDelegate {
 
-
-    public static void invokeBeanDefinitionPostProcessors(ListableBeanFactory beanFactory){
+    public static void invokeBeanDefinitionPostProcessors(ListableBeanFactory beanFactory) {
         List<? extends BeanDefinitionRegistryPostProcessor> postProcessors = beanFactory.getBeansByType(BeanDefinitionRegistryPostProcessor.class);
         for (BeanDefinitionRegistryPostProcessor processor : postProcessors) {
-            processor.postProcessBeanDefinitionRegistry((BeanDefinitionRegistry)beanFactory);
+            processor.postProcessBeanDefinitionRegistry((BeanDefinitionRegistry) beanFactory);
         }
+    }
+
+    public static void registerBeanPostProcessor(ListableBeanFactory beanFactory) {
+        String[] bpNames = beanFactory.getBeanNameByType(BeanPostProcessor.class);
+        List<BeanPostProcessor> bpBeans = Arrays.stream(bpNames).map(n -> beanFactory.getBean(n, BeanPostProcessor.class)).collect(Collectors.toList());
+        beanFactory.adBeanPostProcessor(bpBeans);
     }
 
 }

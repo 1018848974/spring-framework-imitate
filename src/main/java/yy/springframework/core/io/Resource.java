@@ -17,7 +17,7 @@ public interface Resource {
 
     String getDescription();
 
-    default boolean canRead(){
+    default boolean canRead() {
         try {
             return getFile().canRead();
         } catch (IOException e) {

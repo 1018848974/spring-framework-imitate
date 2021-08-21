@@ -33,6 +33,6 @@ public class ClassFileResource implements Resource {
 
     @Override
     public String getDescription() {
-        return "file ptah :" + file.getAbsolutePath() +" name : " +file.getName();
+        return "file ptah :" + file.getAbsolutePath() + " name : " + file.getName();
     }
 }

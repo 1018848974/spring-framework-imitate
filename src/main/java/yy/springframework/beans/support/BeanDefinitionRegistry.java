@@ -1,6 +1,6 @@
 package yy.springframework.beans.support;
 
-import yy.springframework.beans.config.BeanDefinition;
+import yy.springframework.beans.factory.config.BeanDefinition;
 import yy.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import java.util.Set;

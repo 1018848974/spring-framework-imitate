@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
  */
 
 @Configuration
-@ComponentScan("yy.springframework.test.bean")
+@ComponentScan({"yy.springframework.test.bean", "yy.springframework.aop"})
 public class MainConfig {
 
     @Autowired(required = false)
@@ -32,15 +32,15 @@ public class MainConfig {
             for (Method method : annotation.annotationType().getMethods()) {
                 try {
                     Class<?>[] parameterTypes = method.getParameterTypes();
-                    if(parameterTypes.length > 0) continue;;
+                    if (parameterTypes.length > 0) continue;
+                    ;
                     Object v = method.invoke(annotation);
-                    System.out.println("key :   " +  method.getName()+ "|   v：" + v.toString());
+                    System.out.println("key :   " + method.getName() + "|   v：" + v.toString());
                 } catch (Exception e) {
                     System.err.println(method.getName());
 //                    e.printStackTrace();
                 }
             }
-
 
         }
     }

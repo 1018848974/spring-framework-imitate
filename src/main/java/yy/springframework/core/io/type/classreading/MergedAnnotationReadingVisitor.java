@@ -48,8 +48,8 @@ public class MergedAnnotationReadingVisitor<A extends Annotation> extends Annota
         consumer.accept(new TypeAnnotation(annotationType, annotationType.getName(), attributes));
     }
 
-   public static  <A extends Annotation> MergedAnnotationReadingVisitor get(ClassLoader classLoader, String typeDesc, boolean visible, Consumer<MergedAnnotation<A>> consumer){
-        if(!visible){
+    public static <A extends Annotation> MergedAnnotationReadingVisitor get(ClassLoader classLoader, String typeDesc, boolean visible, Consumer<MergedAnnotation<A>> consumer) {
+        if (!visible) {
             return null;
         }
 

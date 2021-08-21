@@ -1,6 +1,6 @@
 package yy.springframework.context.annotation;
 
-import yy.springframework.beans.config.BeanDefinition;
+import yy.springframework.beans.factory.config.BeanDefinition;
 import yy.springframework.beans.factory.BeanDefinitionRegistryPostProcessor;
 import yy.springframework.beans.factory.BeansException;
 import yy.springframework.beans.factory.annotation.AnnotatedBeanDefinition;

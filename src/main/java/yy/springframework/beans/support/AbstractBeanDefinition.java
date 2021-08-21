@@ -1,9 +1,8 @@
 package yy.springframework.beans.support;
 
-import yy.springframework.beans.config.BeanDefinition;
+import yy.springframework.beans.factory.config.BeanDefinition;
 import yy.springframework.beans.factory.NoSuchBeanDefinitionException;
 import yy.springframework.util.ClassUtils;
-import yy.springframework.util.StringUtils;
 
 /**
  * <Description> <br>
@@ -71,9 +70,9 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     }
 
     @Override
-    public Class<?> getBeanClass()  {
+    public Class<?> getBeanClass() {
         Class<?> beanClass = this.beanClass;
-        if(beanClass == null){
+        if (beanClass == null) {
             try {
                 beanClass = resolveBeanClass(ClassUtils.getDefaultClassLoader());
             } catch (ClassNotFoundException e) {

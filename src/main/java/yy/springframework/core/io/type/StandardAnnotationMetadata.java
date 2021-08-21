@@ -55,7 +55,6 @@ public class StandardAnnotationMetadata implements AnnotationMetadata {
         return this.annotations;
     }
 
-
     @Override
     public String getClassName() {
         return source.getName();

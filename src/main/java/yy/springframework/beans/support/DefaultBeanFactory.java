@@ -2,8 +2,9 @@ package yy.springframework.beans.support;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import yy.springframework.beans.config.BeanDefinition;
+import yy.springframework.beans.factory.config.BeanDefinition;
 import yy.springframework.beans.factory.*;
+import yy.springframework.beans.factory.config.BeanPostProcessor;
 import yy.springframework.core.io.type.StandardAnnotationMetadata;
 import yy.springframework.util.StringUtils;
 
@@ -27,6 +28,8 @@ public class DefaultBeanFactory extends AbstractBeanFactory implements ListableB
     private final Set<String> beanDefinitionNames = new HashSet<>(256);
 
     private final Map<Class<?>, String[]> allBeanNamesByType = new ConcurrentHashMap<>();
+
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
     @Override
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) throws NoSuchBeanDefinitionException {
@@ -76,10 +79,19 @@ public class DefaultBeanFactory extends AbstractBeanFactory implements ListableB
         for (String beanName : getBeanNames()) {
             BeanDefinition beanDefinition = getBeanDefinition(beanName);
             StandardAnnotationMetadata metadata = new StandardAnnotationMetadata(beanDefinition.getBeanClass());
-            if(beanDefinition.isSingleton() &&  !metadata.isConcrete()){
+            if (beanDefinition.isSingleton() && !metadata.isConcrete()) {
                 getBean(beanName);
             }
         }
+    }
+
+    @Override
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
+    }
+
+    public void adBeanPostProcessor(List<BeanPostProcessor> pps) {
+        this.beanPostProcessors.addAll(pps);
     }
 
     private String[] doGetBeanNameByType(Class<?> clazz) {

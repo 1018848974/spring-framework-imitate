@@ -52,7 +52,7 @@ public class InjectedMetadata {
                 throw new NoSuchBeanDefinitionException(field.getType().getName());
             }
 
-            if (value != null){
+            if (value != null) {
                 ReflectionUtils.makeAccessible(field);
                 field.set(bean, value);
             }
@@ -79,7 +79,10 @@ public class InjectedMetadata {
             return beanFactory.getBean(name);
         }
 
-        public void Injected(Object bean) throws Throwable{};
+        public void Injected(Object bean) throws Throwable {
+        }
+
+        ;
     }
 
 }

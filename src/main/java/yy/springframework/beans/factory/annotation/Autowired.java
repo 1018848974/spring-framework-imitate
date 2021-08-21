@@ -89,20 +89,20 @@ import java.lang.annotation.*;
  * @author Juergen Hoeller
  * @author Mark Fisher
  * @author Sam Brannen
- * @since 2.5
  * @see AutowiredAnnotationBeanPostProcessor
  * @see Qualifier
  * @see Value
+ * @since 2.5
  */
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Autowired {
 
-	/**
-	 * Declares whether the annotated dependency is required.
-	 * <p>Defaults to {@code true}.
-	 */
-	boolean required() default true;
+    /**
+     * Declares whether the annotated dependency is required.
+     * <p>Defaults to {@code true}.
+     */
+    boolean required() default true;
 
 }

@@ -15,7 +15,7 @@ import java.io.IOException;
  * @createDate 2021/08/13 6:29 下午 <br>
  * @see yy.springframework.core.io.type.classreading <br>
  */
-public class SimpleMetadataReader implements MetadataReader{
+public class SimpleMetadataReader implements MetadataReader {
 
     private static final int PARSING_OPTIONS = org.springframework.asm.ClassReader.SKIP_DEBUG
             | org.springframework.asm.ClassReader.SKIP_CODE | org.springframework.asm.ClassReader.SKIP_FRAMES;

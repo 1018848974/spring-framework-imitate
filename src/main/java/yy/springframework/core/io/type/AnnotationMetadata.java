@@ -9,17 +9,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public interface AnnotationMetadata extends ClassMetadata{
+public interface AnnotationMetadata extends ClassMetadata {
 
-    default Set<String> getAnnotationTypes(){
+    default Set<String> getAnnotationTypes() {
         return getAnnotations().stream()
                 .map(MergedAnnotation::getTypeName)
                 .collect(Collectors.toSet());
     }
 
-    public List<MergedAnnotation<?> > getAnnotations();
+    public List<MergedAnnotation<?>> getAnnotations();
 
-    default boolean hasAnnotation(String annotationName){
+    default boolean hasAnnotation(String annotationName) {
         return this.getAnnotationTypes().contains(annotationName);
     }
 

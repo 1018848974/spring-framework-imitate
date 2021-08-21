@@ -1,6 +1,8 @@
 package yy.springframework.context;
 
-import yy.springframework.beans.config.BeanDefinition;
+import yy.springframework.aop.aspectj.AspectJAwareAdvisorAutoProxyCreator;
+import yy.springframework.beans.factory.RootBeanDefinition;
+import yy.springframework.beans.factory.config.BeanDefinition;
 import yy.springframework.beans.factory.BeanFactory;
 import yy.springframework.beans.factory.ListableBeanFactory;
 import yy.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -20,6 +22,7 @@ import java.util.Set;
  * @see yy.springframework.context <br>
  */
 public abstract class AbstractApplicationContext implements BeanFactory, BeanDefinitionRegistry, AnnotationConfigRegistry {
+    public static final String AUTO_PROXY_CREATOR_BEAN_NAME = "internalAutoProxyCreator";
 
     private final DefaultBeanFactory beanFactory;
 
@@ -27,19 +30,29 @@ public abstract class AbstractApplicationContext implements BeanFactory, BeanDef
         this.beanFactory = new DefaultBeanFactory();
     }
 
-    public void refresh(){
+    public void refresh() {
 
         ListableBeanFactory beanFactory = this.beanFactory;
+
+        registryInsideComponent();
 
         //工厂后置增强 解析配置类扫描所有的BeanDefinition
         PostProcessorDelegate.invokeBeanDefinitionPostProcessors(beanFactory);
 
+        //注册所有的BeanPostProcessor
+        PostProcessorDelegate.registerBeanPostProcessor(beanFactory);
+
         //注册所有单实例Bean
-        FinishBeanFactoryInit(beanFactory);
+        finishBeanFactoryInit(beanFactory);
 
     }
 
-    private void FinishBeanFactoryInit(ListableBeanFactory beanFactory) {
+    private void registryInsideComponent() {
+        //注册AOP处理器
+        this.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, new RootBeanDefinition(AspectJAwareAdvisorAutoProxyCreator.class));
+    }
+
+    private void finishBeanFactoryInit(ListableBeanFactory beanFactory) {
         beanFactory.initializeAllSingletonBean();
     }
 

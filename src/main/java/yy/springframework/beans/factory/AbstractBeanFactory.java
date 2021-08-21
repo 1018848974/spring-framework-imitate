@@ -3,20 +3,22 @@ package yy.springframework.beans.factory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import yy.springframework.beans.BeanCreationException;
-import yy.springframework.beans.BeanInstantiationException;
-import yy.springframework.beans.config.BeanDefinition;
-import yy.springframework.beans.config.BeanWrapper;
+import yy.springframework.beans.factory.config.BeanDefinition;
+import yy.springframework.beans.factory.config.BeanPostProcessor;
+import yy.springframework.beans.factory.config.BeanWrapper;
 import yy.springframework.beans.factory.annotation.Autowired;
 import yy.springframework.beans.factory.annotation.InjectedMetadata;
+import yy.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import yy.springframework.util.BeanUtils;
 import yy.springframework.util.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * <Description> <br>
@@ -26,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @createDate 2021/08/14 6:36 下午 <br>
  * @see yy.springframework.beans.factory <br>
  */
-public abstract class AbstractBeanFactory implements BeanFactory {
+public abstract class AbstractBeanFactory implements BeanFactory, ListableBeanFactory {
 
     private static final Log logger = LogFactory.getLog(AbstractBeanFactory.class);
 
@@ -48,7 +50,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
     @Override
     public Object getBean(String beanName) throws BeansException {
 
-        Object instance = getSingleton(beanName);
+        Object instance = getSingleton(beanName, true);
 
         if (instance != null) {
             return instance;
@@ -91,21 +93,84 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
         Object instance = beanWrapper.getInstance();
 
-        singletonFactories.put(beanName, () -> instance);
+        singletonFactories.put(beanName, () -> getEarlyBeanReference(beanWrapper));
 
         //2。属性注入
         populateBean(instance);
 
         //3 后置处理器增强 AOP
+        instance = initializeBean(instance, beanName);
+
+        //检查早期引用有没有它 不一样的话就是冲突了
+        Object earlyReference = getSingleton(beanName, false);
+
+        if (earlyReference != null && instance != earlyReference) {
+            throw new BeanCreationException("bean conflict " + beanName);
+        }
 
         return instance;
+    }
+
+    private Object getEarlyBeanReference(BeanWrapper beanWrapper) {
+        Object exposedBean = beanWrapper.getInstance();
+
+        for (SmartInstantiationAwareBeanPostProcessor processor : getBeanPostProcessors().stream()
+                .filter(pp -> pp instanceof SmartInstantiationAwareBeanPostProcessor)
+                .map(pp -> (SmartInstantiationAwareBeanPostProcessor) pp).collect(Collectors.toList())) {
+            Object earlyBeanReference = processor.getEarlyBeanReference(beanWrapper.getInstance(), beanWrapper.getBeanName());
+            if (earlyBeanReference != null) {
+                exposedBean = earlyBeanReference;
+            }
+        }
+
+        return exposedBean;
+    }
+
+    private Object initializeBean(Object instance, String beanName) {
+        //初始化bean  可以执行初始化前置处理 aware bean装配 等等
+        Object bean = instance;
+
+        invokeAwareMethod(instance);
+
+        bean = applyBeanPostProcessorBeforeInitialization(bean, beanName);
+
+        //执行初始化后置处理
+        bean = applyBeanPostProcessorAfterInitialization(bean, beanName);
+
+        return bean;
+    }
+
+    private void invokeAwareMethod(Object instance) {
+        if (instance instanceof BeanFactoryAware) {
+            ((BeanFactoryAware) instance).setBeanFactory(this);
+        }
+    }
+
+    private Object applyBeanPostProcessorAfterInitialization(Object bean, String beanName) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            Object current = beanPostProcessor.postProcessAfterInitialization(bean, beanName);
+            if (current != null) {
+                bean = current;
+            }
+        }
+        return bean;
+    }
+
+    private Object applyBeanPostProcessorBeforeInitialization(Object bean, String beanName) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            Object current = beanPostProcessor.postProcessBeforeInitialization(bean, beanName);
+            if (current != null) {
+                bean = current;
+            }
+        }
+        return bean;
     }
 
     private BeanWrapper getBeanInstanceWrapper(String beanName, BeanDefinition bd) {
         //1. 实例化对象
         try {
             Object instance = BeanUtils.instantiateClass(bd.getBeanClass());
-            return new BeanWrapper(bd.getBeanClass(), instance);
+            return new BeanWrapper(bd.getBeanClass(), instance, beanName);
         } catch (Exception e) {
             logger.error("instantiateClass failed beanName : " + beanName, e);
             //TODO
@@ -161,11 +226,11 @@ public abstract class AbstractBeanFactory implements BeanFactory {
         return new InjectedMetadata(clazz, elements);
     }
 
-    private Object getSingleton(String beanName) {
+    private Object getSingleton(String beanName, boolean allowEarlyReference) {
         Object instance = singletonObjects.get(beanName);
         if (instance == null) {
             instance = earlySingletonObjects.get(beanName);
-            if ((instance == null)) {
+            if (instance == null && allowEarlyReference) {
                 synchronized (singletonObjects) {
                     instance = singletonObjects.get(beanName);
                     if (instance == null) {
@@ -187,7 +252,20 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
     @Override
     public <T> T getBean(String name, Class<T> clazz) {
-        return (T)getBean(name);
+        return (T) getBean(name);
+    }
+
+    @Override
+    public Class<?> getType(String beanName) {
+        Object singleton = getSingleton(beanName, false);
+        if (singleton != null) {
+            return singleton.getClass();
+        }
+        BeanDefinition definition = getBeanDefinition(beanName);
+        if (definition != null) {
+            return definition.getBeanClass();
+        }
+        return null;
     }
 
     public abstract BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;

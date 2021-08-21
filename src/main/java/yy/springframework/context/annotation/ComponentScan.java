@@ -16,8 +16,6 @@
 
 package yy.springframework.context.annotation;
 
-
-
 import java.lang.annotation.*;
 
 /**
@@ -42,51 +40,51 @@ import java.lang.annotation.*;
  * @author Chris Beams
  * @author Juergen Hoeller
  * @author Sam Brannen
- * @since 3.1
  * @see Configuration
+ * @since 3.1
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
 public @interface ComponentScan {
 
-	/**
-	 * Alias for {@link #basePackages}.
-	 * <p>Allows for more concise annotation declarations if no other attributes
-	 * are needed &mdash; for example, {@code @ComponentScan("org.my.pkg")}
-	 * instead of {@code @ComponentScan(basePackages = "org.my.pkg")}.
-	 */
-	String[] value() default {};
+    /**
+     * Alias for {@link #basePackages}.
+     * <p>Allows for more concise annotation declarations if no other attributes
+     * are needed &mdash; for example, {@code @ComponentScan("org.my.pkg")}
+     * instead of {@code @ComponentScan(basePackages = "org.my.pkg")}.
+     */
+    String[] value() default {};
 
-	/**
-	 * Base packages to scan for annotated components.
-	 * <p>{@link #value} is an alias for (and mutually exclusive with) this
-	 * attribute.
-	 * <p>Use {@link #basePackageClasses} for a type-safe alternative to
-	 * String-based package names.
-	 */
-	String[] basePackages() default {};
+    /**
+     * Base packages to scan for annotated components.
+     * <p>{@link #value} is an alias for (and mutually exclusive with) this
+     * attribute.
+     * <p>Use {@link #basePackageClasses} for a type-safe alternative to
+     * String-based package names.
+     */
+    String[] basePackages() default {};
 
-	/**
-	 * Type-safe alternative to {@link #basePackages} for specifying the packages
-	 * to scan for annotated components. The package of each class specified will be scanned.
-	 * <p>Consider creating a special no-op marker class or interface in each package
-	 * that serves no purpose other than being referenced by this attribute.
-	 */
-	Class<?>[] basePackageClasses() default {};
+    /**
+     * Type-safe alternative to {@link #basePackages} for specifying the packages
+     * to scan for annotated components. The package of each class specified will be scanned.
+     * <p>Consider creating a special no-op marker class or interface in each package
+     * that serves no purpose other than being referenced by this attribute.
+     */
+    Class<?>[] basePackageClasses() default {};
 
-	/**
-	 * Indicates whether automatic detection of classes annotated with {@code @Component}
-	 * {@code @Repository}, {@code @Service}, or {@code @Controller} should be enabled.
-	 */
-	boolean useDefaultFilters() default true;
+    /**
+     * Indicates whether automatic detection of classes annotated with {@code @Component}
+     * {@code @Repository}, {@code @Service}, or {@code @Controller} should be enabled.
+     */
+    boolean useDefaultFilters() default true;
 
-	/**
-	 * Specify whether scanned beans should be registered for lazy initialization.
-	 * <p>Default is {@code false}; switch this to {@code true} when desired.
-	 * @since 4.1
-	 */
-	boolean lazyInit() default false;
-
+    /**
+     * Specify whether scanned beans should be registered for lazy initialization.
+     * <p>Default is {@code false}; switch this to {@code true} when desired.
+     *
+     * @since 4.1
+     */
+    boolean lazyInit() default false;
 
 }

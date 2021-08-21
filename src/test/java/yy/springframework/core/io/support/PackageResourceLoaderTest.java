@@ -12,12 +12,12 @@ public class PackageResourceLoaderTest {
     private PackageResourceLoader packageResourceLoader;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         packageResourceLoader = new PackageResourceLoader();
     }
 
     @Test
-    public void testGetResources(){
+    public void testGetResources() {
         Set<Resource> resource = packageResourceLoader.getResource("yy.springframework.test.bean");
         Assert.notEmpty(resource);
     }

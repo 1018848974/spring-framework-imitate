@@ -8,7 +8,7 @@ package yy.springframework.beans.factory;
  * @createDate 2021/08/10 9:41 下午 <br>
  * @see yy.springframework.beans.factory <br>
  */
-public class NoSuchBeanDefinitionException extends BeansException{
+public class NoSuchBeanDefinitionException extends BeansException {
 
     private final String beanName;
 
@@ -21,7 +21,6 @@ public class NoSuchBeanDefinitionException extends BeansException{
         super("No bean named '" + name + "' available", cause);
         this.beanName = name;
     }
-
 
     public String getBeanName() {
         return this.beanName;

@@ -27,7 +27,7 @@ public class PackageResourceLoader implements ResourceLoader {
         this.classLoader = ClassUtils.getDefaultClassLoader();
     }
 
-    public Set<Resource> getResource(String basePackage){
+    public Set<Resource> getResource(String basePackage) {
         Assert.notNull(basePackage, "basePackage can not be null");
         String classLocation = ClassUtils.convertClassNameToResourcePath(basePackage);
 
@@ -41,15 +41,15 @@ public class PackageResourceLoader implements ResourceLoader {
 
     private Set<File> retrieveFiles(File file) {
 
-        if(!file.exists()){
+        if (!file.exists()) {
             return Collections.emptySet();
         }
 
-        if(!file.canRead()){
+        if (!file.canRead()) {
             return Collections.emptySet();
         }
 
-        if(!file.isDirectory()){
+        if (!file.isDirectory()) {
             return Collections.emptySet();
         }
 
@@ -61,19 +61,19 @@ public class PackageResourceLoader implements ResourceLoader {
     }
 
     private void doRetrieveFiles(File rootFile, Set<File> result) {
-        if(rootFile == null) return;
+        if (rootFile == null) return;
 
         for (File file : rootFile.listFiles()) {
-            if(file.isDirectory() && file.canRead()){
+            if (file.isDirectory() && file.canRead()) {
                 doRetrieveFiles(file, result);
-            }else {
+            } else {
                 result.add(file);
             }
         }
 
     }
 
-    public ClassLoader getClassLoader(){
+    public ClassLoader getClassLoader() {
         return this.classLoader;
     }
 

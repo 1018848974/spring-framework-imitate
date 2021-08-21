@@ -1,6 +1,6 @@
 package yy.springframework.context.annotation;
 
-import yy.springframework.beans.config.BeanDefinition;
+import yy.springframework.beans.factory.config.BeanDefinition;
 import yy.springframework.beans.support.BeanDefinitionRegistry;
 import yy.springframework.core.io.Resource;
 import yy.springframework.core.io.ResourceLoader;

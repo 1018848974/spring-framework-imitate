@@ -1,7 +1,5 @@
 package yy.springframework.context.annotation;
 
-
-
 import org.junit.Before;
 import org.junit.Test;
 import yy.springframework.beans.factory.BeanFactory;

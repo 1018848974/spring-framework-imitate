@@ -44,7 +44,7 @@ public class SimpleAnnotationMetadataReadingVisitor extends ClassVisitor {
     @Override
     public void visit(int version, int access, String name, String signature, String supername, String[] interfaces) {
         this.className = ClassUtils.convertResourcePathToClassName(name);
-        if(supername != null && !isInterface(access)){
+        if (supername != null && !isInterface(access)) {
             this.superClassName = ClassUtils.convertResourcePathToClassName(supername);
         }
         this.interfaceNames = new String[interfaces.length];
@@ -52,8 +52,6 @@ public class SimpleAnnotationMetadataReadingVisitor extends ClassVisitor {
             interfaceNames[i] = ClassUtils.convertResourcePathToClassName(interfaces[i]);
         }
     }
-
-
 
     @Override
     public AnnotationVisitor visitAnnotation(String typeName, boolean visible) {
@@ -66,7 +64,7 @@ public class SimpleAnnotationMetadataReadingVisitor extends ClassVisitor {
                 this.access, this.superClassName, this.annotations);
     }
 
-    public AnnotationMetadata getMetadata(){
+    public AnnotationMetadata getMetadata() {
         return this.annotationMetadata;
     }
 
